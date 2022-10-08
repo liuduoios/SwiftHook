@@ -30,11 +30,24 @@ public class SwiftHook {
         }
     }
     
-    static func hook(`class`: AnyClass, selector: Selector, mode: HookMode, closure: @convention(block) @escaping () -> Void) {
-        let method = class_getInstanceMethod(`class`, selector)
+    public static func hook(`class`: AnyClass, selector: Selector, mode: HookMode, closure: @convention(block) @escaping () -> Void) {
+        guard let method = class_getInstanceMethod(`class`, selector) else {
+            return
+        }
         let imp = imp_implementationWithBlock(closure)
         let signature = blockSignature(closure)
-        class_addMethod(`class`, selector, imp, signature)
+        let toSelector = NSSelectorFromString("SwiftHook_\(NSStringFromSelector(selector))")
+        if (class_addMethod(`class`, selector, imp, signature)) {
+            class_replaceMethod(`class`, toSelector, method_getImplementation(method), method_getTypeEncoding(method))
+        } else {
+            // 把闭包添加成类的一个方法
+            class_addMethod(`class`, toSelector, imp, signature)
+            guard let toMethod = class_getInstanceMethod(`class`, toSelector) else {
+                return
+            }
+            // 交换新添加的方法和原方法
+            method_exchangeImplementations(method, toMethod)
+        }
     }
     
     static func hook(instance: AnyObject, selector: Selector, mode: HookMode, closure: () -> Void) {

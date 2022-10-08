@@ -13,9 +13,15 @@ class ViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view.
+//        SwiftHook.hook(class: ViewController.self,
+//                       fromSelector: #selector(viewWillAppear(_:)),
+//                       toSelector: #selector(def))
+        
         SwiftHook.hook(class: ViewController.self,
-                       fromSelector: #selector(viewWillAppear(_:)),
-                       toSelector: #selector(def))
+                       selector: #selector(viewWillAppear(_:)),
+                       mode: .before) {
+            print("closure")
+        }
     }
     
     override func viewWillAppear(_ animated: Bool) {
