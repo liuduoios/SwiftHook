@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		26C34A4128F4F68E00FF488B /* HookInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26C34A4028F4F68E00FF488B /* HookInfo.swift */; };
+		26C34A4328F4F6B200FF488B /* HookIdentifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26C34A4228F4F6B200FF488B /* HookIdentifier.swift */; };
 		86000AC428EFDD0B00ECB4B6 /* SwiftHook.h in Headers */ = {isa = PBXBuildFile; fileRef = 86000AC328EFDD0B00ECB4B6 /* SwiftHook.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		86000AD128EFDE4B00ECB4B6 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86000AD028EFDE4B00ECB4B6 /* AppDelegate.swift */; };
 		86000AD328EFDE4B00ECB4B6 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86000AD228EFDE4B00ECB4B6 /* SceneDelegate.swift */; };
@@ -30,6 +32,8 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		26C34A4028F4F68E00FF488B /* HookInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HookInfo.swift; sourceTree = "<group>"; };
+		26C34A4228F4F6B200FF488B /* HookIdentifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HookIdentifier.swift; sourceTree = "<group>"; };
 		86000AC028EFDD0B00ECB4B6 /* SwiftHook.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = SwiftHook.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		86000AC328EFDD0B00ECB4B6 /* SwiftHook.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SwiftHook.h; sourceTree = "<group>"; };
 		86000ACE28EFDE4B00ECB4B6 /* SwiftHookDemo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SwiftHookDemo.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -86,6 +90,8 @@
 			children = (
 				86000AC328EFDD0B00ECB4B6 /* SwiftHook.h */,
 				86000AE228EFDE9D00ECB4B6 /* SwiftHook.swift */,
+				26C34A4028F4F68E00FF488B /* HookInfo.swift */,
+				26C34A4228F4F6B200FF488B /* HookIdentifier.swift */,
 				86DDB8EF28F1C679009CDBB4 /* BlockUtilities.h */,
 				86DDB8F028F1C679009CDBB4 /* BlockUtilities.m */,
 			);
@@ -221,7 +227,9 @@
 			buildActionMask = 2147483647;
 			files = (
 				86DDB8F228F1C679009CDBB4 /* BlockUtilities.m in Sources */,
+				26C34A4128F4F68E00FF488B /* HookInfo.swift in Sources */,
 				86000AE328EFDE9D00ECB4B6 /* SwiftHook.swift in Sources */,
+				26C34A4328F4F6B200FF488B /* HookIdentifier.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

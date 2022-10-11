@@ -17,10 +17,16 @@ class ViewController: UIViewController {
 //                       fromSelector: #selector(viewWillAppear(_:)),
 //                       toSelector: #selector(def))
         
-        SwiftHook.hook(class: ViewController.self,
+        SwiftHook.hook(class: Self.self,
                        selector: #selector(viewWillAppear(_:)),
                        mode: .before) {
             print("closure")
+        }
+        
+//        let value = ViewController.self
+//        let c = object_getClass(value)
+        SwiftHook.hook(class: ViewController.self, classSelector: #selector(ViewController.classMethod), mode: .before) {
+            print("class method before hook")
         }
     }
     
@@ -30,7 +36,12 @@ class ViewController: UIViewController {
     }
     
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
-        abc()
+//        abc()
+        Self.classMethod()
+    }
+    
+    @objc dynamic static func classMethod() {
+        print("classMethod")
     }
 
     @objc func abc() {
