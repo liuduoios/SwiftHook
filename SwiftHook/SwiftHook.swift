@@ -61,40 +61,10 @@ public class SwiftHook {
         let selector = method_getName(method)
         let toSelector = NSSelectorFromString("SwiftHook_\(NSStringFromSelector(selector))")
         
-        // 把 hook 信息保存进全局字典
         let identifier = HookIdentifier(class: `class`, selector: selector)
-        var info: HookInfo! = hookInfo[identifier]
-        if info == nil {
-            info = HookInfo(beforeClosures: [], afterClosures: [])
-        }
-        switch mode {
-        case .before:
-            info.beforeClosures.append(closure)
-        case .after:
-            info.afterClosures.append(closure)
-        case .instead:
-            break
-        }
-        hookInfo[identifier] = info
+        saveIdentifier(identifier, mode: mode, closure: closure)
         
-        // 创建调用包装函数
-        let callClosure: @convention(block) (AnyObject) -> Void = { object in
-            if let hookInfo = hookInfo[identifier] {
-                for closure in hookInfo.beforeClosures {
-                    closure()
-                }
-            }
-            
-            // 调用原函数
-            _ = object.perform(toSelector)
-            
-            if let hookInfo = hookInfo[identifier] {
-                for closure in hookInfo.afterClosures {
-                    closure()
-                }
-            }
-        }
-        
+        let callClosure = finalClosure(identifier, toSelector: toSelector)
         let callClosureImp = imp_implementationWithBlock(callClosure)
         let callClosureSignature = blockSignature(callClosure)
         
@@ -115,40 +85,10 @@ public class SwiftHook {
         let selector = method_getName(method)
         let toSelector = NSSelectorFromString("SwiftHook_\(NSStringFromSelector(selector))")
         
-        // 把 hook 信息保存进全局字典
         let identifier = HookIdentifier(class: `class`, selector: selector)
-        var info: HookInfo! = hookInfo[identifier]
-        if info == nil {
-            info = HookInfo(beforeClosures: [], afterClosures: [])
-        }
-        switch mode {
-        case .before:
-            info.beforeClosures.append(closure)
-        case .after:
-            info.afterClosures.append(closure)
-        case .instead:
-            break
-        }
-        hookInfo[identifier] = info
+        saveIdentifier(identifier, mode: mode, closure: closure)
         
-        // 创建调用包装函数
-        let callClosure: @convention(block) (AnyObject) -> Void = { object in
-            if let hookInfo = hookInfo[identifier] {
-                for closure in hookInfo.beforeClosures {
-                    closure()
-                }
-            }
-            
-            // 调用原函数
-            _ = object.perform(toSelector)
-            
-            if let hookInfo = hookInfo[identifier] {
-                for closure in hookInfo.afterClosures {
-                    closure()
-                }
-            }
-        }
-        
+        let callClosure = finalClosure(identifier, toSelector: toSelector)
         let callClosureImp = imp_implementationWithBlock(callClosure)
         let callClosureSignature = blockSignature(callClosure)
         
@@ -165,35 +105,45 @@ public class SwiftHook {
         }
     }
     
+    private static func saveIdentifier(_ identifier: HookIdentifier, mode: HookMode, closure: @convention(block) @escaping () -> Void) {
+        var info: HookInfo! = hookInfo[identifier]
+        if info == nil {
+            info = HookInfo(beforeClosures: [], afterClosures: [])
+        }
+        switch mode {
+        case .before:
+            info.beforeClosures.append(closure)
+        case .after:
+            info.afterClosures.append(closure)
+        case .instead:
+            break
+        }
+        hookInfo[identifier] = info
+    }
+    
     /// 生成最终要用来替换的闭包
     /// - Parameters:
     ///   - closure: 要被包装的闭包
     ///   - toSelector: 要替换成的 Selector，替换后代表原方法
     /// - Returns: 包装后的闭包
-    private static func finalClosure(_ closure: @escaping () -> Void, toSelector: Selector, mode: HookMode) -> @convention(block) (AnyObject) -> Void {
-        
-        
-        let finalClosure: @convention(block) (_ object: AnyObject) -> Void
-        
-        
-        
-        switch mode {
-        case .before:
-            finalClosure = { object in
-                closure()
-                _ = object.perform(toSelector) // 调用原方法
+    private static func finalClosure(_ identifier: HookIdentifier, toSelector: Selector) -> @convention(block) (AnyObject) -> Void {
+        let callClosure: @convention(block) (AnyObject) -> Void = { object in
+            if let hookInfo = hookInfo[identifier] {
+                for closure in hookInfo.beforeClosures {
+                    closure()
+                }
             }
-        case .after:
-            finalClosure = { object in
-                _ = object.perform(toSelector) // 调用原方法
-                closure()
-            }
-        case .instead:
-            finalClosure = { _ in
-                closure()
+            
+            // 调用原函数
+            _ = object.perform(toSelector)
+            
+            if let hookInfo = hookInfo[identifier] {
+                for closure in hookInfo.afterClosures {
+                    closure()
+                }
             }
         }
-        return finalClosure
+        return callClosure
     }
     
     static func hook(instance: AnyObject, selector: Selector, mode: HookMode, closure: () -> Void) {
