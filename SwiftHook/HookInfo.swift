@@ -10,6 +10,6 @@ import Foundation
 internal var hookInfo: [HookIdentifier: HookInfo] = [:]
 
 struct HookInfo {
-    var beforeClosures: [() -> Void]
-    var afterClosures: [() -> Void]
+    var beforeClosures: [(AnyObject) -> Void]
+    var afterClosures: [(AnyObject) -> Void]
 }

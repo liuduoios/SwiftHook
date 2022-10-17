@@ -37,7 +37,7 @@ public class SwiftHook {
     ///   - classSelector: 类方法 SEL
     ///   - mode: hook 模式
     ///   - closure: 要添加的代码
-    public static func hook(`class`: AnyClass, classSelector: Selector, mode: HookMode, closure: @convention(block) @escaping () -> Void) {
+    public static func hook(`class`: AnyClass, classSelector: Selector, mode: HookMode, closure: @convention(block) @escaping (AnyObject) -> Void) {
         guard let method = class_getClassMethod(`class`, classSelector) else {
             return
         }
@@ -50,14 +50,14 @@ public class SwiftHook {
     ///   - selector: 类方法 SEL
     ///   - mode: hook 模式
     ///   - closure: 要添加的代码
-    public static func hook(`class`: AnyClass, selector: Selector, mode: HookMode, closure: @convention(block) @escaping () -> Void) {
+    public static func hook(`class`: AnyClass, selector: Selector, mode: HookMode, closure: @convention(block) @escaping (AnyObject) -> Void) {
         guard let method = class_getInstanceMethod(`class`, selector) else {
             return
         }
         hook(class: `class`, method: method, mode: mode, closure: closure)
     }
     
-    private static func hook(`class`: AnyClass, classMethod method: Method, mode: HookMode, closure: @convention(block) @escaping () -> Void) {
+    private static func hook(`class`: AnyClass, classMethod method: Method, mode: HookMode, closure: @convention(block) @escaping (AnyObject) -> Void) {
         let selector = method_getName(method)
         let toSelector = NSSelectorFromString("SwiftHook_\(NSStringFromSelector(selector))")
         
@@ -81,7 +81,7 @@ public class SwiftHook {
         }
     }
     
-    private static func hook(`class`: AnyClass, method: Method, mode: HookMode, closure: @convention(block) @escaping () -> Void) {
+    private static func hook(`class`: AnyClass, method: Method, mode: HookMode, closure: @convention(block) @escaping (AnyObject) -> Void) {
         let selector = method_getName(method)
         let toSelector = NSSelectorFromString("SwiftHook_\(NSStringFromSelector(selector))")
         
@@ -105,7 +105,7 @@ public class SwiftHook {
         }
     }
     
-    private static func saveIdentifier(_ identifier: HookIdentifier, mode: HookMode, closure: @convention(block) @escaping () -> Void) {
+    private static func saveIdentifier(_ identifier: HookIdentifier, mode: HookMode, closure: @convention(block) @escaping (AnyObject) -> Void) {
         var info: HookInfo! = hookInfo[identifier]
         if info == nil {
             info = HookInfo(beforeClosures: [], afterClosures: [])
@@ -130,7 +130,7 @@ public class SwiftHook {
         let callClosure: @convention(block) (AnyObject) -> Void = { object in
             if let hookInfo = hookInfo[identifier] {
                 for closure in hookInfo.beforeClosures {
-                    closure()
+                    closure(object)
                 }
             }
             
@@ -139,7 +139,7 @@ public class SwiftHook {
             
             if let hookInfo = hookInfo[identifier] {
                 for closure in hookInfo.afterClosures {
-                    closure()
+                    closure(object)
                 }
             }
         }

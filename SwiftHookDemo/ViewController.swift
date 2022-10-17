@@ -17,15 +17,21 @@ class ViewController: UIViewController {
 //                       fromSelector: #selector(viewWillAppear(_:)),
 //                       toSelector: #selector(def))
         
+//        SwiftHook.hook(class: Self.self,
+//                       selector: #selector(viewWillAppear(_:)),
+//                       mode: .before) {
+//            print("closure")
+//        }
+        
         SwiftHook.hook(class: Self.self,
                        selector: #selector(viewWillAppear(_:)),
-                       mode: .before) {
-            print("closure")
+                       mode: .after) { object in
+            print("closure after \(object)")
         }
         
 //        let value = ViewController.self
 //        let c = object_getClass(value)
-        SwiftHook.hook(class: ViewController.self, classSelector: #selector(ViewController.classMethod), mode: .before) {
+        SwiftHook.hook(class: ViewController.self, classSelector: #selector(ViewController.classMethod), mode: .before) { _ in
             print("class method before hook")
         }
     }
