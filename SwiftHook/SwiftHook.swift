@@ -62,7 +62,9 @@ public class SwiftHook {
         let toSelector = NSSelectorFromString("SwiftHook_\(NSStringFromSelector(selector))")
         
         let identifier = HookIdentifier(class: `class`, selector: selector)
+        let hasHooked = identifier.hasHooked()
         saveIdentifier(identifier, mode: mode, closure: closure)
+        if hasHooked { return }
         
         let callClosure = finalClosure(identifier, toSelector: toSelector)
         let callClosureImp = imp_implementationWithBlock(callClosure)
@@ -86,7 +88,9 @@ public class SwiftHook {
         let toSelector = NSSelectorFromString("SwiftHook_\(NSStringFromSelector(selector))")
         
         let identifier = HookIdentifier(class: `class`, selector: selector)
+        let hasHooked = identifier.hasHooked()
         saveIdentifier(identifier, mode: mode, closure: closure)
+        if hasHooked { return }
         
         let callClosure = finalClosure(identifier, toSelector: toSelector)
         let callClosureImp = imp_implementationWithBlock(callClosure)

@@ -17,11 +17,11 @@ class ViewController: UIViewController {
 //                       fromSelector: #selector(viewWillAppear(_:)),
 //                       toSelector: #selector(def))
         
-//        SwiftHook.hook(class: Self.self,
-//                       selector: #selector(viewWillAppear(_:)),
-//                       mode: .before) {
-//            print("closure")
-//        }
+        SwiftHook.hook(class: Self.self,
+                       selector: #selector(viewWillAppear(_:)),
+                       mode: .before) { object in
+            print("closure before \(object)")
+        }
         
         SwiftHook.hook(class: Self.self,
                        selector: #selector(viewWillAppear(_:)),

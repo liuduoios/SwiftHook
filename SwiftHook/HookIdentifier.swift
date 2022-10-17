@@ -13,4 +13,8 @@ struct HookIdentifier: Hashable {
     init(`class`: AnyClass, selector: Selector) {
         identifier = String(describing: ObjectIdentifier(`class`)) + NSStringFromSelector(selector)
     }
+    
+    func hasHooked() -> Bool {
+        return hookInfo[self] != nil
+    }
 }
